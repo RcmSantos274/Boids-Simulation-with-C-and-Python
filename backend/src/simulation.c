@@ -83,8 +83,36 @@ static void enforce_screen_boundaries(Entity* boid, float turn_factor, int width
     if (boid->position.y < margin) boid->velocity.vy += turn_factor;
     if (boid->position.y > height - margin) boid->velocity.vy -= turn_factor;
 }
+//########################
+// ISSO AQUI PODE VIRAR UMA FUNCAO GENERICA PARA AMBOS OS CASOS DE MOUSE_FEAR E MOUSE_ATTRACTION
+static void enforce_no_mouse_collision(Entity* boid, int mouse_x, int mouse_y, int mouse_fear_radius) {
+    float dx = boid->position.x - mouse_x;
+    float dy = boid->position.y - mouse_y;
+    float distance = sqrtf(dx * dx + dy * dy);
+    if (distance < mouse_fear_radius) {
+        float avoidance_factor = (mouse_fear_radius - distance) / mouse_fear_radius;
+        boid->velocity.vx += (dx / distance) * avoidance_factor;
+        boid->velocity.vy += (dy / distance) * avoidance_factor;
+    } 
+}
+static void enforce_mouse_attraction(Entity* boid, int mouse_x, int mouse_y, int mouse_attraction_radius) {
+    float dx = mouse_x - boid->position.x;
+    float dy = mouse_y - boid->position.y;
+    float distance = sqrtf(dx * dx + dy * dy);
 
-void update_boids(Boids* boids, Grid *grid, float visual_range, float protected_range, float centering_factor, float matching_factor, float avoid_factor,float turn_factor, float max_speed, float min_speed, int screen_width, int screen_height, int margin) {
+    if (distance < mouse_attraction_radius) {
+        float attraction_strength = 2.0f;
+        boid->velocity.vx += (dx / distance) * attraction_strength;
+        boid->velocity.vy += (dy / distance) * attraction_strength;
+    }
+}
+//########################
+void update_boids(Boids* boids, Grid *grid, float visual_range, float protected_range, 
+    float centering_factor, float matching_factor, float avoid_factor,float turn_factor, 
+    float max_speed, float min_speed, int screen_width, int screen_height, int margin,
+    int mouse_x, int mouse_y, bool mouse_motion, bool mouse_fear, bool mouse_attraction,
+    int mouse_fear_radius, int mouse_attraction_radius) {
+
     if (!boids || boids->count == 0) return;
 
     Velocity* new_velocities = (Velocity*) malloc(boids->count * sizeof(Velocity));
@@ -106,6 +134,14 @@ void update_boids(Boids* boids, Grid *grid, float visual_range, float protected_
         boid->velocity = new_velocities[i];
 
         enforce_screen_boundaries(boid, turn_factor, screen_width, screen_height, margin);
+        if (mouse_motion) {
+            if (mouse_fear) {
+                enforce_no_mouse_collision(boid, mouse_x, mouse_y, mouse_fear_radius);
+            }
+            if (mouse_attraction) {
+                enforce_mouse_attraction(boid, mouse_x, mouse_y, mouse_attraction_radius);
+            }
+        }
         enforce_speed_limits(boid, max_speed, min_speed);
 
         boid->position.x += boid->velocity.vx;

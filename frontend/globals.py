@@ -11,7 +11,7 @@ AVOID_FACTOR:       float = 0.1
 MATCHING_FACTOR:    float = 0.05
 MAX_SPEED:          float = 6.0
 MIN_SPEED:          float = 3.0
-MARGIN:             int   = 150
+MARGIN:             int   = 75
 MARGIN_LINE:        bool  = True
 BIRD_WIDTH:         int   = 1
 BIRD_RADIUS:        float = 2.5
@@ -20,13 +20,13 @@ BACKGROUND_COLOR:   tuple = (10, 20, 40)
 FPS: int = 60   
 BLUR: bool = False
 BLUR_TRANSPARENCY_VALUE: int = 15
-BIRD_SIZE: int = 6
-MOUSE_MOTION: bool = False
+BIRD_SIZE: int = 3
+MOUSE_MOTION: bool = True
 MOUSE_POS: tuple = (0, 0)
-MOUSE_FEAR: bool = False
-MOUSE_ATTRACTION: bool = False  
-MOUSE_FEAR_RADIUS: int = 100
-MOUSE_ATTRACTION_RADIUS: int = 200
+MOUSE_FEAR: bool = True
+MOUSE_ATTRACTION: bool = False
+MOUSE_FEAR_RADIUS: int = 75
+MOUSE_ATTRACTION_RADIUS: int = 500
 
 # VARIAVEIS CRITICAS - So podem ser alteradas em tempo de execucao caso o "run" do programa seja reiniciado. 
 # Pra rodar em tempo de execucao vai precisar dar um cleanup e instanciar nova simulation()
@@ -34,7 +34,7 @@ SCREEN_WIDTH:           int = 900
 SCREEN_HEIGHT:          int = 650
 SCREEN_WIDTH_MARGIN:    int = 200
 SCREEN_HEIGHT_MARGIN:   int = 100
-NUM_BIRDS:              int = 100
+NUM_BIRDS:              int = 1000
 PLATFORM_SYSTEM: str = platform.system()
 SUPPORTED_PLATFORMS = ["Windows", "Darwin", "Linux"]
 LIBRARY_EXTENSIONS = {
